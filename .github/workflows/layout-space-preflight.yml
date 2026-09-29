@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Run all eight plain function tests on Python 2.7
+      - name: Run all ten plain function tests on Python 2.7
         run: docker run --rm -v "$PWD:/src:ro" -w /src python:2.7.18 python .github/legacy-tests.py
   build:
     runs-on: ubuntu-latest

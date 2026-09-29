@@ -13,6 +13,6 @@ for name in ('test_backwards_compat', 'test_unicode', 'test_layout_space'):
     for function_name, function in inspect.getmembers(module, inspect.isfunction):
         if function_name.startswith('test_'):
             suite.addTest(unittest.FunctionTestCase(function))
-assert suite.countTestCases() == 8, suite.countTestCases()
+assert suite.countTestCases() == 10, suite.countTestCases()
 result = unittest.TextTestRunner(verbosity=2).run(suite)
 sys.exit(0 if result.wasSuccessful() else 1)
