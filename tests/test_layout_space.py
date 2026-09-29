@@ -1,0 +1,57 @@
+from collections import OrderedDict
+
+from asciitree import LeftAligned
+from asciitree.drawing import BOX_LIGHT, BoxStyle
+
+
+def test_default_layout_is_unchanged():
+    style = BoxStyle()
+    assert style.child_head('label') == ' +-- label'
+    assert style.child_tail('line') == ' |  line'
+    assert style.last_child_head('label') == ' +-- label'
+    assert style.last_child_tail('line') == '    line'
+
+
+def test_custom_space_in_every_layout_method():
+    style = BoxStyle(space=u'\u00a0', indent=2, horiz_len=3, label_space=2)
+    assert style.child_head('label') == u'\u00a0\u00a0+---\u00a0\u00a0label'
+    assert style.child_tail('line') == u'\u00a0\u00a0|\u00a0\u00a0\u00a0line'
+    assert style.last_child_head('label') == u'\u00a0\u00a0+---\u00a0\u00a0label'
+    assert style.last_child_tail('line') == u'\u00a0' * 6 + 'line'
+
+
+def test_nested_tree_preserves_label_spaces():
+    tree = {'root label': OrderedDict([
+        ('first label', {'leaf label': {}}),
+        ('last label', {'last leaf': {}}),
+    ])}
+    result = LeftAligned(draw=BoxStyle(space=u'\u00a0'))(tree)
+    assert result == u'\n'.join([
+        'root label',
+        u'\u00a0+--\u00a0first label',
+        u'\u00a0|\u00a0\u00a0\u00a0+--\u00a0leaf label',
+        u'\u00a0+--\u00a0last label',
+        u'\u00a0\u00a0\u00a0\u00a0\u00a0+--\u00a0last leaf',
+    ])
+
+
+def test_custom_space_with_unicode_glyphs():
+    style = BoxStyle(space=u'\u2003', gfx=BOX_LIGHT)
+    assert style.child_head('label') == u'\u2003\u251c\u2500\u2500\u2003label'
+    assert style.child_tail('line') == u'\u2003\u2502\u2003\u2003line'
+    assert style.last_child_head('label') == u'\u2003\u2514\u2500\u2500\u2003label'
+    assert style.last_child_tail('line') == u'\u2003' * 4 + 'line'
+
+
+def test_zero_padding_counts():
+    style = BoxStyle(space=u'\u00a0', indent=0, horiz_len=0, label_space=0)
+    assert style.child_head('label') == '+label'
+    assert style.child_tail('line') == '|line'
+    assert style.last_child_head('label') == '+label'
+    assert style.last_child_tail('line') == u'\u00a0line'
+
+
+def test_custom_space_does_not_change_other_styles():
+    custom = BoxStyle(space=u'\u00a0')
+    assert custom.child_head('label') != BoxStyle().child_head('label')
+    assert BoxStyle().child_head('label') == ' +-- label'

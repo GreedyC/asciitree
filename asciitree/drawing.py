@@ -73,29 +73,30 @@ class BoxStyle(Style):
     label_space = 1   #: Space between glyphs and label.
     horiz_len = 2     #: Length of horizontal lines
     indent = 1        #: Indent for subtrees
+    space = ' '       #: Character used for indentation and layout padding.
 
     def child_head(self, label):
-        return (' ' * self.indent
+        return (self.space * self.indent
                 + self.gfx['VERTICAL_AND_RIGHT']
                 + self.gfx['HORIZONTAL'] * self.horiz_len
-                + ' ' * self.label_space
+                + self.space * self.label_space
                 + label)
 
     def child_tail(self, line):
-        return (' ' * self.indent
+        return (self.space * self.indent
                 + self.gfx['VERTICAL']
-                + ' ' * self.horiz_len
+                + self.space * self.horiz_len
                 + line)
 
     def last_child_head(self, label):
-        return (' ' * self.indent
+        return (self.space * self.indent
                 + self.gfx['UP_AND_RIGHT']
                 + self.gfx['HORIZONTAL'] * self.horiz_len
-                + ' ' * self.label_space
+                + self.space * self.label_space
                 + label)
 
     def last_child_tail(self, line):
-        return (' ' * self.indent
-                + ' ' * len(self.gfx['VERTICAL'])
-                + ' ' * self.horiz_len
+        return (self.space * self.indent
+                + self.space * len(self.gfx['VERTICAL'])
+                + self.space * self.horiz_len
                 + line)
