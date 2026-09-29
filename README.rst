@@ -54,11 +54,15 @@ embedding a tree in text that may wrap:
 
 .. code:: python
 
+  from asciitree import LeftAligned
   from asciitree.drawing import BoxStyle
 
+  tree = {'root': {'child': {}}}
   tr = LeftAligned(draw=BoxStyle(space=u'\u00a0'))
   print(tr(tree))
 
 Label text and the characters in ``BoxStyle.gfx`` are left unchanged.
+On Python 2, use Unicode labels when selecting Unicode layout characters;
+encoded byte labels are not automatically decoded.
 
 Read the documentation at http://pythonhosted.org/asciitree
