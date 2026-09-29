@@ -55,3 +55,20 @@ def test_custom_space_does_not_change_other_styles():
     custom = BoxStyle(space=u'\u00a0')
     assert custom.child_head('label') != BoxStyle().child_head('label')
     assert BoxStyle().child_head('label') == ' +-- label'
+
+
+def test_default_preserves_native_string_and_unicode_types():
+    for label in ('caf\xc3\xa9', u'caf\xe9'):
+        style = BoxStyle()
+        for method in (style.child_head, style.child_tail,
+                       style.last_child_head, style.last_child_tail):
+            assert type(method(label)) is type(label)
+            assert method(label).endswith(label)
+        result = LeftAligned()({label: {label: {}}})
+        assert type(result) is type(label)
+
+
+def test_custom_space_with_nested_unicode_labels():
+    result = LeftAligned(draw=BoxStyle(space=u'\u00a0'))(
+        {u'caf\xe9': {u'na\xefve': {u'\u679d': {}}}})
+    assert result == u'caf\xe9\n\u00a0+--\u00a0na\xefve\n' + u'\u00a0' * 5 + u'+--\u00a0\u679d'
