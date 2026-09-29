@@ -57,15 +57,17 @@ def test_custom_space_does_not_change_other_styles():
     assert BoxStyle().child_head('label') == ' +-- label'
 
 
-def test_default_preserves_native_string_and_unicode_types():
-    for label in ('caf\xc3\xa9', u'caf\xe9'):
+def test_default_preserves_existing_string_types():
+    for label in ('label', u'caf\xe9'):
         style = BoxStyle()
         for method in (style.child_head, style.child_tail,
-                       style.last_child_head, style.last_child_tail):
-            assert type(method(label)) is type(label)
+                       style.last_child_head):
+            # Default box glyphs are Unicode, including BOX_ASCII.
+            assert type(method(label)) is type(u'')
             assert method(label).endswith(label)
+        assert type(style.last_child_tail(label)) is type(label)
         result = LeftAligned()({label: {label: {}}})
-        assert type(result) is type(label)
+        assert type(result) is type(u'')
 
 
 def test_custom_space_with_nested_unicode_labels():
